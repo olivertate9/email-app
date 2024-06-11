@@ -14,19 +14,11 @@ Before running the application, ensure you have the following prerequisites inst
    ```bash
    git clone https://github.com/olivertate9/email-app.git
    
-2. **Create an .env file in root(near pom.xml) with this parameters for sending emails:**
-   
-   MAIL_HOST=smtp.gmail.com
-
-   MAIL_PORT=587
+2. **Change the .env file in root(near pom.xml) with this parameters for sending emails:**
    
    MAIL_USERNAME=yourRealMail@gmail.com
    
    MAIL_PASSWORD=your app token([guide](https://support.google.com/accounts/answer/185833) how to get it)
-   
-   MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
-   
-   MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
 
 3. **Run docker-compose to start the app**
    ```bash
