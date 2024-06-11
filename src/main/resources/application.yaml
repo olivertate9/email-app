@@ -1,0 +1,30 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: ${PROPERTIES_MAIL_SMTP_AUTH}
+          starttls:
+            enable: ${PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE}
+  config:
+    import: optional:file:.env[.properties]
+
+server:
+  port: 8090
+
+elasticsearch:
+  address: localhost:9200
+
+rabbit:
+  queue:
+    name: email-queue
+
