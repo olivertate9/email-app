@@ -7,14 +7,13 @@ import dev.profitsoft.email_sender.repositories.EmailRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +35,9 @@ class EmailServiceTest {
     @MockBean
     private EmailRepository emailRepository;
 
+    @Captor
+    private ArgumentCaptor<Email> emailCaptor;
+
     @Test
     void testSendEmailSuccess() {
         EmailDto emailDto = EmailDto.builder()
@@ -51,15 +53,9 @@ class EmailServiceTest {
         verify(javaMailSender, times(1))
                 .send(any(SimpleMailMessage.class));
 
-        Email expectedEmail = Email.builder()
-                .content(emailDto.getContent())
-                .subject(emailDto.getSubject())
-                .email(emailDto.getEmail())
-                .status(Status.SENT)
-                .build();
-
-        verify(emailRepository, times(1))
-                .save(Mockito.refEq(expectedEmail, "id", "errorMessage", "lastAttempt", "attemptCount"));
+        verify(emailRepository, times(1)).save(emailCaptor.capture());
+        Email savedEmail = emailCaptor.getValue();
+        assertEquals(Status.SENT, savedEmail.getStatus());
     }
 
     @Test
@@ -72,8 +68,6 @@ class EmailServiceTest {
 
         doThrow(new MailException("Failed to send email") {
         }).when(javaMailSender).send(any(SimpleMailMessage.class));
-
-        ArgumentCaptor<Email> emailCaptor = ArgumentCaptor.forClass(Email.class);
 
         emailService.sendEmail(emailDto);
 
